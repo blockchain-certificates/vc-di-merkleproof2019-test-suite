@@ -5,6 +5,9 @@
     },
     "eddsa-jcs-2022": {
       "tags": ["eddsa-jcs-2022"]
+    },
+    "merkle-proof-2019": {
+      "tags": ["merkle-proof-2019"]
     }
   }
 }

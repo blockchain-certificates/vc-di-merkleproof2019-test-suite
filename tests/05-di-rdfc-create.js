@@ -8,7 +8,7 @@ import {
 import {config} from './helpers.js';
 import {endpoints} from 'vc-test-suite-implementations';
 
-const cryptosuite = 'eddsa-rdfc-2022';
+const cryptosuite = 'merkle-proof-2019';
 const {tags} = config.suites[cryptosuite];
 const {match} = endpoints.filterByTag({
   tags: [...tags],
@@ -17,6 +17,6 @@ const {match} = endpoints.filterByTag({
 
 checkDataIntegrityProofFormat({
   implemented: match,
-  testDescription: 'Data Integrity (eddsa-rdfc-2022 issuers)',
-  cryptosuiteName: 'eddsa-rdfc-2022'
+  testDescription: 'Data Integrity (merkle-proof-2019 issuers)',
+  cryptosuiteName: 'merkle-proof-2019'
 });
