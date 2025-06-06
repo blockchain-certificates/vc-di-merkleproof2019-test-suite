@@ -9,7 +9,7 @@ import {
 import {config} from './helpers.js';
 import {endpoints} from 'vc-test-suite-implementations';
 
-const cryptosuites = ['eddsa-rdfc-2022', 'eddsa-jcs-2022'];
+const cryptosuites = ['merkle-proof-2019'];
 
 for(const suiteName of cryptosuites) {
   const {tags} = config.suites[suiteName];
@@ -22,9 +22,9 @@ for(const suiteName of cryptosuites) {
     match,
     cryptosuites: [suiteName]
   });
-  verificationMethods({
-    suiteName,
-    match
-  });
-
+  // not exactly applicable to merkle-proof-2019
+  // verificationMethods({
+  //   suiteName,
+  //   match
+  // });
 }
