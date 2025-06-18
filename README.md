@@ -1,7 +1,7 @@
-# [EdDSA](https://www.w3.org/TR/vc-di-eddsa/) Cryptosuite test suite
+# [MerkleProof2019](https://w3c-ccg.github.io/lds-merkle-proof-2019) Cryptosuite test suite
 
 Provides interoperability tests for Verifiable Credential processors
-(Issuers and Verifiers) that support [EdDSA](https://www.w3.org/TR/vc-di-eddsa/)
+(Issuers and Verifiers) that support [MerkleProof2019](https://w3c-ccg.github.io/lds-merkle-proof-2019)
 and [Data Integrity](https://www.w3.org/TR/vc-data-integrity/) cryptosuites.
 
 - [Install](#install)

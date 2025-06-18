@@ -8,9 +8,9 @@ import {endpoints} from 'vc-test-suite-implementations';
 import {generateTestData} from './vc-generator/index.js';
 
 const should = chai.should();
-const {tags} = config.suites['eddsa-rdfc-2022'];
+const cryptosuite = 'merkle-proof-2019';
+const {tags} = config.suites[cryptosuite];
 
-// only use implementations with `eddsa-rdfc-2022` issuers.
 const {
   match: issuerMatches
 } = endpoints.filterByTag({tags: [...tags], property: 'issuers'});
@@ -18,7 +18,7 @@ const {
   match: verifierMatches
 } = endpoints.filterByTag({tags: [...tags], property: 'verifiers'});
 
-describe('eddsa-rdfc-2022 (interop)', function() {
+describe(`${cryptosuite} (interop)`, function() {
   let validVc;
   before(async function() {
     const credentials = await generateTestData();

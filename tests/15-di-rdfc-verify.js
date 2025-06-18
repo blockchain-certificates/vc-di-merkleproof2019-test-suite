@@ -13,7 +13,8 @@ import {endpoints} from 'vc-test-suite-implementations';
 import {getMultikey} from './vc-generator/helpers.js';
 
 // only use implementations with `eddsa-rdfc-2022` verifiers.
-const {tags} = config.suites['eddsa-rdfc-2022'];
+const cryptosuite = 'merkle-proof-2019';
+const {tags} = config.suites[cryptosuite];
 const {match} = endpoints.filterByTag({
   tags: [...tags],
   property: 'verifiers'

@@ -1,16 +1,14 @@
 {
   "group": "vc",
   "specStatus": "base",
-  "shortName": "vc-di-eddsa-test-suite",
-  "subtitle": "Interoperability test suite for EdDSA Data Integrity cryptosuites.",
-  "github": "https://github.com/w3c/vc-di-eddsa-test-suite",
-  "edDraftURI": "https://w3c.github.io/vc-di-eddsa-test-suite",
+  "shortName": "vc-di-merkle-proof-2019-test-suite",
+  "subtitle": "Interoperability test suite for MerkleProof2019 Data Integrity cryptosuite.",
+  "github": "github.com/blockchain-certificates/vc-di-merkleproof2019-test-suite",
+  "edDraftURI": "https://blockcerts.org/vc-di-merkle-proof-2019-test-suite",
   "doJsonLd": true,
   "includePermalinks": false,
   "authors": [
-    { "name": "Andrew Jones", "url": "https://github.com/aljones15",
-      "company": "Digital Bazaar, Inc.", "companyURL": "https://digitalbazaar.com/" },
-    { "name": "Tashi D. Gyeltshen", "url": "https://github.com/jsAssassin",
-      "company": "Digital Bazaar, Inc.", "companyURL": "https://digitalbazaar.com/" }
+    { "name": "Julien Fraichot", "url": "https://github.com/lemoustachiste",
+      "company": "Hyland Software", "companyURL": "https://hyland.com/" }
     ]
 }
