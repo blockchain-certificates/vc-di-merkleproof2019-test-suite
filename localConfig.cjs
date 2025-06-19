@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 // Rename this file to .localConfig.cjs
-// you can specify a BASE_URL before running the tests such as:
-// BASE_URL=http://localhost:40443/zDdfsdfs npm test
-const baseUrl = process.env.BASE_URL || 'http://localhost:5000/api/v1';
+// you can specify a BASE_ISSUER_URL before running the tests such as:
+// BASE_ISSUER_URL=http://localhost:40443/zDdfsdfs npm test
+const baseIssuerUrl = process.env.BASE_ISSUER_URL || 'http://localhost:5000/api/v1';
+const baseVerifierUrl = process.env.BASE_VERIFIER_URL || 'http://localhost:9000';
 
 module.exports = {
   settings: {
@@ -17,7 +18,7 @@ module.exports = {
     implementation: 'Blockcerts',
     issuers: [{
       id: 'did:myMethod:implementation:issuer:id',
-      endpoint: `${baseUrl}/credentials/issue/ethereum/sepolia`,
+      endpoint: `${baseIssuerUrl}/credentials/issue/ethereum/sepolia`,
       supports: {
         vc: ['1.1', '2.0']
       },
@@ -25,7 +26,7 @@ module.exports = {
     }],
     verifiers: [{
       id: 'did:myMethod:implementation:verifier:id',
-      endpoint: `${baseUrl}/credentials/verify`,
+      endpoint: `${baseVerifierUrl}/credentials/verify`,
       tags: ['merkle-proof-2019', 'localhost']
     }]
   }]
