@@ -6,33 +6,41 @@ import {
   checkDataIntegrityProofVerifyErrors
 } from 'data-integrity-test-suite-assertion';
 import {config} from './helpers.js';
-import {
-  cryptosuite as eddsaRdfc2022CryptoSuite
-} from '@digitalbazaar/eddsa-rdfc-2022-cryptosuite';
+import {LDMerkleProof2019} from 'jsonld-signatures-merkleproof2019';
 import {endpoints} from 'vc-test-suite-implementations';
-import {getMultikey} from './vc-generator/helpers.js';
 
-// only use implementations with `eddsa-rdfc-2022` verifiers.
+// only use implementations with `merkle-proof-2019` verifiers.
 const cryptosuite = 'merkle-proof-2019';
 const {tags} = config.suites[cryptosuite];
 const {match} = endpoints.filterByTag({
   tags: [...tags],
   property: 'verifiers'
 });
-const {key} = await getMultikey();
+
+const key = {
+  signer: () => ({
+    id: 'did:tdw:Qmcox8WT7JK9zaWWcmVFyQE3npmxSzHsB54GZjFp5uFBRn:blockcerts.org',
+    sign: () => {}
+  }),
+  controller: 'did:tdw:Qmcox8WT7JK9zaWWcmVFyQE3npmxSzHsB54GZjFp5uFBRn:blockcerts.org'
+};
 // options for the DI Verifier Suite
 const testDataOptions = {
-  suiteName: 'eddsa-rdfc-2022',
-  cryptosuite: eddsaRdfc2022CryptoSuite,
+  suiteName: cryptosuite,
+  cryptosuite: new LDMerkleProof2019({
+    options: {
+      issuerEndpoint: match.get('Blockcerts').implementation.settings.issuers[0].endpoint
+    }
+  }),
   key
 };
 const optionalTests = {
-  proofChain: true
+  proofChain: false
 };
 
 checkDataIntegrityProofVerifyErrors({
   implemented: match,
-  testDescription: 'Data Integrity (eddsa-rdfc-2022 verifiers)',
+  testDescription: `Data Integrity (${cryptosuite} verifiers)`,
   testDataOptions,
   optionalTests
 });
