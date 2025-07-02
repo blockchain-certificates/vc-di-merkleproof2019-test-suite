@@ -8,7 +8,12 @@
 const baseIssuerUrl = process.env.BASE_ISSUER_URL || 'http://localhost:5000/api/v1';
 const baseVerifierUrl = process.env.BASE_VERIFIER_URL || 'http://localhost:9000';
 
+const issuerEndpoint = `${baseIssuerUrl}/credentials/issue/mocknet`;
+const verifierEndpoint = `${baseVerifierUrl}/credentials/verify`;
+
 module.exports = {
+  issuerEndpoint,
+  verifierEndpoint,
   settings: {
     enableInteropTests: false, // default
     testAllImplementations: false // default
@@ -18,7 +23,7 @@ module.exports = {
     implementation: 'Blockcerts',
     issuers: [{
       id: 'did:myMethod:implementation:issuer:id',
-      endpoint: `${baseIssuerUrl}/credentials/issue/ethereum/sepolia`,
+      endpoint: issuerEndpoint,
       supports: {
         vc: ['1.1', '2.0']
       },
@@ -26,7 +31,7 @@ module.exports = {
     }],
     verifiers: [{
       id: 'did:myMethod:implementation:verifier:id',
-      endpoint: `${baseVerifierUrl}/credentials/verify`,
+      endpoint: verifierEndpoint,
       tags: ['merkle-proof-2019', 'localhost']
     }]
   }]

@@ -3,16 +3,21 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 import * as vc from '@digitalbazaar/vc';
+import config from '../../localConfig.cjs';
+// eslint-disable-next-line sort-imports
 import {
-  invalidCreateProof,
   invalidCreateVerifyData
 } from './helpers.js';
 import {DataIntegrityProof} from '@digitalbazaar/data-integrity';
 import {documentLoader} from './documentLoader.js';
 import {
-  cryptosuite as eddsaRdfc2022CryptoSuite
-} from '@digitalbazaar/eddsa-rdfc-2022-cryptosuite';
+  LDMerkleProof2019
+} from 'jsonld-signatures-merkleproof2019';
+// eslint-disable-next-line sort-imports
 import jcsCanonicalize from 'canonicalize';
+import cloneDeep from 'lodash.clonedeep';
+import jsigs from 'jsonld-signatures';
+const { AssertionProofPurpose } = jsigs.purposes;
 
 export const vcGenerators = new Map([
   ['issuedVc', _issuedVc],
@@ -30,60 +35,80 @@ export const vcGenerators = new Map([
 ]);
 
 async function _invalidProofPurpose({signer, credential}) {
-  const suite = _createEddsa2022Suite({signer});
-  suite.createProof = invalidCreateProof({mockPurpose: 'invalidPurpose'});
+  const suite = _createMerkleProof2019Suite({signer});
+  const originalSuite = cloneDeep(suite);
+  suite.createProof = async function() {
+    const proof = await originalSuite.createProof({ document: credential, purpose: new AssertionProofPurpose() });
+    proof.proofPurpose = 'invalidPurpose';
+    return proof;
+  };
   return _issueCloned({suite, credential});
 }
 
 async function _noProofPurpose({signer, credential}) {
-  const suite = _createEddsa2022Suite({signer});
-  suite.createProof = invalidCreateProof({addProofPurpose: false});
+  const suite = _createMerkleProof2019Suite({signer});
+  const originalSuite = cloneDeep(suite);
+  suite.createProof = async function() {
+    const proof = await originalSuite.createProof({ document: credential, purpose: new AssertionProofPurpose() });
+    delete proof.proofPurpose;
+    return proof;
+  };
   return _issueCloned({suite, credential});
 }
 
 async function _invalidVm({signer, credential}) {
-  const suite = _createEddsa2022Suite({signer});
+  const suite = _createMerkleProof2019Suite({signer});
   suite.verificationMethod = 'did:key:@invalidVm@';
   return _issueCloned({suite, credential});
 }
 
 async function _noVm({signer, credential}) {
-  const suite = _createEddsa2022Suite({signer});
-  suite.createProof = invalidCreateProof({addVm: false});
+  const suite = _createMerkleProof2019Suite({signer});
+  const originalSuite = cloneDeep(suite);
+  suite.createProof = async function() {
+    const proof = await originalSuite.createProof({ document: credential, purpose: new AssertionProofPurpose() });
+    delete proof.verificationMethod;
+    return proof;
+  };
   return _issueCloned({suite, credential});
 }
 
 async function _invalidCreated({signer, credential}) {
-  const suite = _createEddsa2022Suite({signer});
+  const suite = _createMerkleProof2019Suite({signer});
   suite.date = 'invalidDate';
   return _issueCloned({suite, credential});
 }
 
 async function _noCreated({signer, credential}) {
-  const suite = _createEddsa2022Suite({signer});
-  suite.createProof = invalidCreateProof({addCreated: false});
+  const suite = _createMerkleProof2019Suite({signer});
+  const originalSuite = cloneDeep(suite);
+  suite.createProof = async function() {
+    const proof = await originalSuite.createProof({ document: credential, purpose: new AssertionProofPurpose() });
+    delete proof.created;
+    return proof;
+  };
   return _issueCloned({suite, credential});
 }
 
 async function _incorrectCryptosuite({signer, credential}) {
-  const suite = _createEddsa2022Suite({signer});
+  const suite = _createMerkleProof2019Suite({signer});
   suite.cryptosuite = 'unknown-cryptosuite-2017';
   return _issueCloned({suite, credential});
 }
 
 async function _incorrectProofType({signer, credential}) {
-  const suite = _createEddsa2022Suite({signer});
+  const suite = _createMerkleProof2019Suite({signer});
   suite.type = 'UnknownProofType';
   return _issueCloned({suite, credential});
 }
 
 async function _issuedVc({signer, credential}) {
-  const suite = _createEddsa2022Suite({signer});
+  const suite = _createMerkleProof2019Suite({signer});
   return _issueCloned({suite, credential});
 }
 
 async function _canonizeJcs({signer, credential}) {
-  const suite = _createEddsa2022Suite({signer});
+  const suite = _createMerkleProof2019Suite({signer});
   // canonize is expected to return a promise
   suite.canonize = async input => {
     return jcsCanonicalize(input);
@@ -92,7 +117,7 @@ async function _canonizeJcs({signer, credential}) {
 }
 
 async function _canonizeUnknown({signer, credential}) {
-  const suite = _createEddsa2022Suite({signer});
+  const suite = _createMerkleProof2019Suite({signer});
   // canonize is expected to return a promise
   const prefix = 'unknown-';
   suite.canonize = async input => {
@@ -107,15 +132,25 @@ async function _canonizeUnknown({signer, credential}) {
 }
 
 async function _incorrectDigest({signer, credential}) {
-  const suite = _createEddsa2022Suite({signer});
+  const suite = _createMerkleProof2019Suite({signer});
   suite.createVerifyData = invalidCreateVerifyData;
   return _issueCloned({suite, credential});
 }
 
-function _createEddsa2022Suite({signer}) {
+function _createMerkleProof2019Suite({signer}) {
   // remove milliseconds precision
   const date = new Date().toISOString().replace(/\.\d+Z$/, 'Z');
-  const cryptosuite = eddsaRdfc2022CryptoSuite;
+  const verificationMethod = 'did:tdw:Qmcox8WT7JK9zaWWcmVFyQE3npmxSzHsB54GZjFp5uFBRn:blockcerts.org#oGpk97CR';
+  signer = {
+    sign: () => {},
+    id: verificationMethod
+  };
+  const cryptosuite = new LDMerkleProof2019({
+    verificationMethod,
+    options: {
+      issuerEndpoint: config.issuerEndpoint
+    }
+  });
   return new DataIntegrityProof({signer, date, cryptosuite});
 }
 

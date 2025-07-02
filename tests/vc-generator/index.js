@@ -18,17 +18,13 @@ const vcCache = new Map([
  * @returns {Promise<Map>} Returns a Map of test data.
  */
 export async function generateTestData() {
-  const {signer, issuer} = await getMultikey({
-    seedMultibase: (process.env?.KEY_SEED_DB ||
-      process.env?.CLIENT_SECRET_DB)
-  });
   const credential = structuredClone(validVc);
-  credential.issuer = issuer;
+  credential.issuer = 'did:tdw:Qmcox8WT7JK9zaWWcmVFyQE3npmxSzHsB54GZjFp5uFBRn:blockcerts.org';
   for(const [id, generator] of vcGenerators) {
     if(vcCache.get(id)) {
       continue;
     }
-    const testData = await generator({signer, credential});
+    const testData = await generator({credential});
     vcCache.set(id, testData);
   }
   return {

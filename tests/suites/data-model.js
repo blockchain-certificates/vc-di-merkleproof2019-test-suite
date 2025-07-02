@@ -34,7 +34,6 @@ export function verificationMethods({suiteName, match}) {
           before(async function() {
             issuedVc = await createInitialVc({issuer, vc: validVc});
             proofs = getProofs(issuedVc);
-            console.log('PROOFS', proofs);
             verificationMethodDocuments =
               await getVerificationMethodDocuments(proofs);
           });
