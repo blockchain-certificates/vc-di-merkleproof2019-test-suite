@@ -167,8 +167,7 @@ export function diProofs({suiteName, match, cryptosuites}) {
                 'Expected eddsa-rdfc-2022 or eddsa-jcs-2022 cryptosuite.');
             }
           });
-          it('The proofValue property of the proof MUST be a detached EdDSA ' +
-            'signature produced according to [RFC8032], encoded using the ' +
+          it('The proofValue property of the proof MUST be encoded using the ' +
             'base-58-btc header and alphabet as described in the ' +
             'Multibase section of Controller Documents 1.0.',
           async function() {
