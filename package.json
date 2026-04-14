@@ -35,7 +35,7 @@
     "chai": "^4.3.6",
     "data-integrity-test-suite-assertion": "github:w3c-ccg/data-integrity-test-suite-assertion",
     "jsonld-document-loader": "^2.0.0",
-    "jsonld-signatures-merkleproof2019": "^2.17.0",
+    "jsonld-signatures-merkleproof2019": "^2.20.3",
     "lodash.clonedeep": "^4.5.0",
     "mocha": "^11.7.0",
     "uuid": "^9.0.0",
